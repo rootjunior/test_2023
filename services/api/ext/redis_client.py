@@ -2,9 +2,6 @@ from redis.asyncio import Redis
 
 
 class RedisClient(Redis):
-    def __init__(self, *args, **kwargs) -> None:
-        super().__init__(*args, **kwargs)
-
     async def write_data(self, phone: str, address: str) -> None:
         await self.set(phone, address)
         self.close()
