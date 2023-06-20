@@ -1,0 +1,36 @@
+version: '3'
+
+volumes:
+  redis_data:
+
+services:
+  redis:
+    container_name: redis-container
+    image: redis
+    volumes:
+      - redis_data:/data
+    ports:
+      - "6379:6379"
+
+  api:
+    container_name: api-container
+    depends_on:
+      - redis
+    build:
+      args:
+        - ENVIRON=dev
+      context: .
+      dockerfile: ./services/api/Dockerfile
+    image: api-image:latest
+    env_file: env/api.env
+    volumes:
+      - ./services/api/:/code/api/
+      - ./scripts/:/code/scripts/
+    ports:
+      - "8000:8000"
+
+networks:
+  default:
+    name: bus
+    external: true
+    
